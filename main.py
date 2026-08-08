@@ -55,7 +55,43 @@ while True:
     choice = input("선택: ")
 
     if choice == "1":
-        print("퀴즈 풀기를 선택하셨습니다.")
+        score = 0
+
+        print()
+        print(f"퀴즈를 시작합니다! 총 {len(quizzes)}문제")
+        print("-" * 40)
+
+        for quiz in quizzes:
+            quiz.show()
+
+            while True:
+                user_input = input("정답 번호를 입력하세요 (1-4): ").strip()
+
+                if user_input == "":
+                    print("입력값이 비어 있습니다. 다시 입력해주세요.")
+                    continue
+
+                try:
+                    user_answer = int(user_input)
+                except ValueError:
+                    print("숫자만 입력해주세요.")
+                    continue
+
+                if user_answer < 1 or user_answer > 4:
+                    print("1부터 4 사이의 숫자를 입력해주세요.")
+                    continue
+
+                break
+
+            if quiz.check_answer(user_answer):
+                print("정답입니다!")
+                score += 1
+            else:
+                print("오답입니다.")
+
+            print("-" * 40)
+
+        print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
 
     elif choice == "2":
         print("퀴즈 추가를 선택하셨습니다.")
