@@ -94,7 +94,36 @@ while True:
         print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
 
     elif choice == "2":
-        print("퀴즈 추가를 선택하셨습니다.")
+        print()
+        print("새로운 퀴즈를 추가합니다.")
+
+        question = input("문제를 입력하세요: ").strip()
+
+        choices = []
+
+        for i in range(1, 5):
+            choice_text = input(f"선택지 {i}: ").strip()
+            choices.append(choice_text)
+
+        while True:
+            answer_input = input("정답 번호를 입력하세요 (1-4): ").strip()
+
+            try:
+                answer = int(answer_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if answer < 1 or answer > 4:
+                print("1부터 4 사이의 숫자를 입력해주세요.")
+                continue
+
+            break
+
+        new_quiz = Quiz(question, choices, answer)
+        quizzes.append(new_quiz)
+
+        print("퀴즈가 추가되었습니다!")
 
     elif choice == "3":
         print("퀴즈 목록을 선택하셨습니다.")
