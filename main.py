@@ -41,6 +41,8 @@ quizzes = [
     )
 ]
 
+best_score = 0
+
 while True:
     print("=" * 40)
     print("Python English Quiz Game")
@@ -92,6 +94,8 @@ while True:
             print("-" * 40)
 
         print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
+        if score > best_score:
+            best_score = score
 
     elif choice == "2":
         print()
@@ -135,7 +139,7 @@ while True:
         print(f"총 {len(quizzes)}개의 퀴즈가 있습니다.")
 
     elif choice == "4":
-        print("점수 확인을 선택하셨습니다.")
+        print(f"최고 점수: {best_score} / {len(quizzes)}")
 
     elif choice == "5":
         print("프로그램을 종료합니다.")
