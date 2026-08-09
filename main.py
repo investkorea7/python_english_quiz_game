@@ -14,6 +14,24 @@ class Quiz:
 
     def check_answer(self, user_answer):
         return user_answer == self.answer
+
+class QuizGame:
+    def __init__(self, quizzes, best_score=0):
+        self.quizzes = quizzes
+        self.best_score = best_score
+
+    def show_quiz_list(self):
+        print()
+        print("===== 퀴즈 목록 =====")
+
+        for i, quiz in enumerate(self.quizzes, start=1):
+            print(f"{i}. {quiz.question}")
+
+        print(f"총 {len(self.quizzes)}개의 퀴즈가 있습니다.")
+
+    def show_best_score(self):
+        print(f"최고 점수: {self.best_score} / {len(self.quizzes)}")    
+
 def save_state(quizzes, best_score):
     data = {
         "best_score": best_score,
@@ -89,6 +107,8 @@ if loaded_quizzes is not None:
 else:
     best_score = 0
 
+game = QuizGame(quizzes, best_score)
+
 while True:
     print("=" * 40)
     print("Python English Quiz Game")
@@ -142,6 +162,7 @@ while True:
         print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
         if score > best_score:
             best_score = score
+            game.best_score = best_score
             save_state(quizzes, best_score)
 
     elif choice == "2":
@@ -193,16 +214,10 @@ while True:
         print("퀴즈가 추가되었습니다!")
 
     elif choice == "3":
-        print()
-        print("===== 퀴즈 목록 =====")
-
-        for i, quiz in enumerate(quizzes, start=1):
-            print(f"{i}. {quiz.question}")
-
-        print(f"총 {len(quizzes)}개의 퀴즈가 있습니다.")
+        game.show_quiz_list()
 
     elif choice == "4":
-        print(f"최고 점수: {best_score} / {len(quizzes)}")
+        game.show_best_score()
 
     elif choice == "5":
         print("프로그램을 종료합니다.")
