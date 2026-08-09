@@ -148,13 +148,27 @@ while True:
         print()
         print("새로운 퀴즈를 추가합니다.")
 
-        question = input("문제를 입력하세요: ").strip()
+        while True:
+            question = input("문제를 입력하세요: ").strip()
+
+            if question == "":
+                print("문제는 비워둘 수 없습니다.")
+                continue
+
+            break
 
         choices = []
 
         for i in range(1, 5):
-            choice_text = input(f"선택지 {i}: ").strip()
-            choices.append(choice_text)
+            while True:
+                choice_text = input(f"선택지 {i}: ").strip()
+
+                if choice_text == "":
+                    print("선택지는 비워둘 수 없습니다.")
+                    continue
+
+                choices.append(choice_text)
+                break
 
         while True:
             answer_input = input("정답 번호를 입력하세요 (1-4): ").strip()
