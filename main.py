@@ -126,7 +126,13 @@ while True:
         print("퀴즈가 추가되었습니다!")
 
     elif choice == "3":
-        print("퀴즈 목록을 선택하셨습니다.")
+        print()
+        print("===== 퀴즈 목록 =====")
+
+        for i, quiz in enumerate(quizzes, start=1):
+            print(f"{i}. {quiz.question}")
+
+        print(f"총 {len(quizzes)}개의 퀴즈가 있습니다.")
 
     elif choice == "4":
         print("점수 확인을 선택하셨습니다.")
