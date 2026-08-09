@@ -1,3 +1,5 @@
+import json
+
 class Quiz:
     def __init__(self, question, choices, answer):
         self.question = question
@@ -12,6 +14,44 @@ class Quiz:
 
     def check_answer(self, user_answer):
         return user_answer == self.answer
+def save_state(quizzes, best_score):
+    data = {
+        "best_score": best_score,
+        "quizzes": []
+    }
+
+    for quiz in quizzes:
+        data["quizzes"].append({
+            "question": quiz.question,
+            "choices": quiz.choices,
+            "answer": quiz.answer
+        })
+
+    with open("state.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+def load_state():
+    try:
+        with open("state.json", "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        loaded_quizzes = []
+
+        for item in data["quizzes"]:
+            loaded_quizzes.append(
+                Quiz(
+                    item["question"],
+                    item["choices"],
+                    item["answer"]
+                )
+            )
+
+        loaded_best_score = data.get("best_score", 0)
+
+        return loaded_quizzes, loaded_best_score
+
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        return None, 0
 
 quizzes = [
     Quiz(
@@ -41,7 +81,13 @@ quizzes = [
     )
 ]
 
-best_score = 0
+loaded_quizzes, loaded_best_score = load_state()
+
+if loaded_quizzes is not None:
+    quizzes = loaded_quizzes
+    best_score = loaded_best_score
+else:
+    best_score = 0
 
 while True:
     print("=" * 40)
@@ -96,6 +142,7 @@ while True:
         print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
         if score > best_score:
             best_score = score
+            save_state(quizzes, best_score)
 
     elif choice == "2":
         print()
@@ -127,6 +174,8 @@ while True:
         new_quiz = Quiz(question, choices, answer)
         quizzes.append(new_quiz)
 
+        save_state(quizzes, best_score)
+
         print("퀴즈가 추가되었습니다!")
 
     elif choice == "3":
@@ -146,4 +195,4 @@ while True:
         break
 
     else:
-        print("잘못된 입력입니다.")
+        print("잘못된 입력입니다.")                

@@ -1,0 +1,65 @@
+{
+    "best_score": 0,
+    "quizzes": [
+        {
+            "question": "abundant의 뜻은?",
+            "choices": [
+                "풍부한",
+                "불안한",
+                "정확한",
+                "평범한"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "reluctant의 뜻은?",
+            "choices": [
+                "열정적인",
+                "꺼리는",
+                "친절한",
+                "신중한"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "inevitable의 뜻은?",
+            "choices": [
+                "피할 수 없는",
+                "예상 밖의",
+                "일시적인",
+                "의심스러운"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "contribute의 뜻은?",
+            "choices": [
+                "경쟁하다",
+                "기여하다",
+                "비교하다",
+                "거절하다"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "significant의 뜻은?",
+            "choices": [
+                "사소한",
+                "우연한",
+                "중요한",
+                "복잡한"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "fragile의 뜻은?",
+            "choices": [
+                "튼튼한",
+                "깨지기 쉬운",
+                "빠른",
+                "조용한"
+            ],
+            "answer": 2
+        }
+    ]
+}
