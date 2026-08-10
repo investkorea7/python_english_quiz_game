@@ -130,10 +130,25 @@ while True:
         print(f"퀴즈를 시작합니다! 총 {len(quizzes)}문제")
         print("-" * 40)
 
+        while True:
+            count_input = input(f"몇 문제를 풀까요? (1-{len(quizzes)}): ").strip()
+
+            try:
+                question_count = int(count_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if question_count < 1 or question_count > len(quizzes):
+                print(f"1부터 {len(quizzes)} 사이의 숫자를 입력해주세요.")
+                continue
+
+            break
+
         shuffled_quizzes = quizzes.copy()
         random.shuffle(shuffled_quizzes)
 
-        for quiz in shuffled_quizzes:
+        for quiz in shuffled_quizzes[:question_count]:
             quiz.show()
 
             while True:
@@ -163,7 +178,7 @@ while True:
 
             print("-" * 40)
 
-        print(f"결과: {len(quizzes)}문제 중 {score}문제 정답!")
+        print(f"결과: {question_count}문제 중 {score}문제 정답!")
         if score > best_score:
             best_score = score
             game.best_score = best_score
