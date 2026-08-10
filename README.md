@@ -207,3 +207,5 @@ Git에서 관리하지 않을 파일을 지정합니다.
 
 Git branch and merge practice completed.
 Git clone and pull practice completed.
+
+Git branch merge practice completed.
