@@ -31,7 +31,166 @@ class QuizGame:
         print(f"총 {len(self.quizzes)}개의 퀴즈가 있습니다.")
 
     def show_best_score(self):
-        print(f"최고 점수: {self.best_score} / {len(self.quizzes)}")    
+        print(f"최고 점수: {self.best_score} / {len(self.quizzes)}")  
+
+    def show_menu(self):
+        print("=" * 40)
+        print("Python English Quiz Game")
+        print("=" * 40)
+        print("1. 퀴즈 풀기")
+        print("2. 퀴즈 추가")
+        print("3. 퀴즈 목록")
+        print("4. 점수 확인")
+        print("5. 종료")
+        print("6. 퀴즈 삭제")
+        print("=" * 40)      
+
+    def play_quiz(self):
+        score = 0
+
+        print()
+        print(f"퀴즈를 시작합니다! 총 {len(self.quizzes)}문제")
+        print("-" * 40)
+
+        while True:
+            count_input = input(
+                f"몇 문제를 풀까요? (1-{len(self.quizzes)}): "
+            ).strip()
+
+            try:
+                question_count = int(count_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if question_count < 1 or question_count > len(self.quizzes):
+                print(
+                    f"1부터 {len(self.quizzes)} 사이의 숫자를 입력해주세요."
+                )
+                continue
+
+            break
+
+        shuffled_quizzes = self.quizzes.copy()
+        random.shuffle(shuffled_quizzes)
+
+        for quiz in shuffled_quizzes[:question_count]:
+            quiz.show()
+
+            while True:
+                user_input = input(
+                    "정답 번호를 입력하세요 (1-4): "
+                ).strip()
+
+                if user_input == "":
+                    print("입력값이 비어 있습니다. 다시 입력해주세요.")
+                    continue
+
+                try:
+                    user_answer = int(user_input)
+                except ValueError:
+                    print("숫자만 입력해주세요.")
+                    continue
+
+                if user_answer < 1 or user_answer > 4:
+                    print("1부터 4 사이의 숫자를 입력해주세요.")
+                    continue
+
+                break
+
+            if quiz.check_answer(user_answer):
+                print("정답입니다!")
+                score += 1
+            else:
+                print("오답입니다.")
+
+            print("-" * 40)
+
+        print(f"결과: {question_count}문제 중 {score}문제 정답!")
+
+        if score > self.best_score:
+            self.best_score = score
+            save_state(self.quizzes, self.best_score)
+
+    def add_quiz(self):
+        print()
+        print("새로운 퀴즈를 추가합니다.")
+
+        while True:
+            question = input("문제를 입력하세요: ").strip()
+
+            if question == "":
+                print("문제는 비워둘 수 없습니다.")
+                continue
+
+            break
+
+        choices = []
+
+        for i in range(1, 5):
+            while True:
+                choice_text = input(f"선택지 {i}: ").strip()
+
+                if choice_text == "":
+                    print("선택지는 비워둘 수 없습니다.")
+                    continue
+
+                choices.append(choice_text)
+                break
+
+        while True:
+            answer_input = input("정답 번호를 입력하세요 (1-4): ").strip()
+
+            try:
+                answer = int(answer_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if answer < 1 or answer > 4:
+                print("1부터 4 사이의 숫자를 입력해주세요.")
+                continue
+
+            break
+
+        new_quiz = Quiz(question, choices, answer)
+        self.quizzes.append(new_quiz)
+
+        save_state(self.quizzes, self.best_score)
+
+        print("퀴즈가 추가되었습니다!")
+
+    def delete_quiz(self):
+        print()
+        print("===== 퀴즈 삭제 =====")
+
+        for i, quiz in enumerate(self.quizzes, start=1):
+            print(f"{i}. {quiz.question}")
+
+        while True:
+            delete_input = input(
+                f"삭제할 퀴즈 번호를 입력하세요 (1-{len(self.quizzes)}): "
+            ).strip()
+
+            try:
+                delete_number = int(delete_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if delete_number < 1 or delete_number > len(self.quizzes):
+                print(
+                    f"1부터 {len(self.quizzes)} 사이의 숫자를 입력해주세요."
+                )
+                continue
+
+            break
+
+        deleted_quiz = self.quizzes.pop(delete_number - 1)
+
+        save_state(self.quizzes, self.best_score)
+
+        print(f"'{deleted_quiz.question}' 퀴즈가 삭제되었습니다.")
 
 def save_state(quizzes, best_score):
     data = {
@@ -111,127 +270,15 @@ else:
 game = QuizGame(quizzes, best_score)
 
 while True:
-    print("=" * 40)
-    print("Python English Quiz Game")
-    print("=" * 40)
-    print("1. 퀴즈 풀기")
-    print("2. 퀴즈 추가")
-    print("3. 퀴즈 목록")
-    print("4. 점수 확인")
-    print("5. 종료")
-    print("6. 퀴즈 삭제")
-    print("=" * 40)
+    game.show_menu()
 
     choice = input("선택: ")
 
     if choice == "1":
-        score = 0
-
-        print()
-        print(f"퀴즈를 시작합니다! 총 {len(quizzes)}문제")
-        print("-" * 40)
-
-        while True:
-            count_input = input(f"몇 문제를 풀까요? (1-{len(quizzes)}): ").strip()
-
-            try:
-                question_count = int(count_input)
-            except ValueError:
-                print("숫자만 입력해주세요.")
-                continue
-
-            if question_count < 1 or question_count > len(quizzes):
-                print(f"1부터 {len(quizzes)} 사이의 숫자를 입력해주세요.")
-                continue
-
-            break
-
-        shuffled_quizzes = quizzes.copy()
-        random.shuffle(shuffled_quizzes)
-
-        for quiz in shuffled_quizzes[:question_count]:
-            quiz.show()
-
-            while True:
-                user_input = input("정답 번호를 입력하세요 (1-4): ").strip()
-
-                if user_input == "":
-                    print("입력값이 비어 있습니다. 다시 입력해주세요.")
-                    continue
-
-                try:
-                    user_answer = int(user_input)
-                except ValueError:
-                    print("숫자만 입력해주세요.")
-                    continue
-
-                if user_answer < 1 or user_answer > 4:
-                    print("1부터 4 사이의 숫자를 입력해주세요.")
-                    continue
-
-                break
-
-            if quiz.check_answer(user_answer):
-                print("정답입니다!")
-                score += 1
-            else:
-                print("오답입니다.")
-
-            print("-" * 40)
-
-        print(f"결과: {question_count}문제 중 {score}문제 정답!")
-        if score > best_score:
-            best_score = score
-            game.best_score = best_score
-            save_state(quizzes, best_score)
+        game.play_quiz()
 
     elif choice == "2":
-        print()
-        print("새로운 퀴즈를 추가합니다.")
-
-        while True:
-            question = input("문제를 입력하세요: ").strip()
-
-            if question == "":
-                print("문제는 비워둘 수 없습니다.")
-                continue
-
-            break
-
-        choices = []
-
-        for i in range(1, 5):
-            while True:
-                choice_text = input(f"선택지 {i}: ").strip()
-
-                if choice_text == "":
-                    print("선택지는 비워둘 수 없습니다.")
-                    continue
-
-                choices.append(choice_text)
-                break
-
-        while True:
-            answer_input = input("정답 번호를 입력하세요 (1-4): ").strip()
-
-            try:
-                answer = int(answer_input)
-            except ValueError:
-                print("숫자만 입력해주세요.")
-                continue
-
-            if answer < 1 or answer > 4:
-                print("1부터 4 사이의 숫자를 입력해주세요.")
-                continue
-
-            break
-
-        new_quiz = Quiz(question, choices, answer)
-        quizzes.append(new_quiz)
-
-        save_state(quizzes, best_score)
-
-        print("퀴즈가 추가되었습니다!")
+        game.add_quiz()
 
     elif choice == "3":
         game.show_quiz_list()
@@ -244,33 +291,7 @@ while True:
         break
 
     elif choice == "6":
-        print()
-        print("===== 퀴즈 삭제 =====")
-
-        for i, quiz in enumerate(quizzes, start=1):
-            print(f"{i}. {quiz.question}")
-
-        while True:
-            delete_input = input(
-                f"삭제할 퀴즈 번호를 입력하세요 (1-{len(quizzes)}): "
-            ).strip()
-
-            try:
-                delete_number = int(delete_input)
-            except ValueError:
-                print("숫자만 입력해주세요.")
-                continue
-
-            if delete_number < 1 or delete_number > len(quizzes):
-                print(f"1부터 {len(quizzes)} 사이의 숫자를 입력해주세요.")
-                continue
-
-            break
-
-        deleted_quiz = quizzes.pop(delete_number - 1)
-        save_state(quizzes, best_score)
-
-        print(f"'{deleted_quiz.question}' 퀴즈가 삭제되었습니다.")
+        game.delete_quiz()
 
     else:
         print("잘못된 입력입니다.")                
