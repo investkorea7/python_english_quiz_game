@@ -119,6 +119,7 @@ while True:
     print("3. 퀴즈 목록")
     print("4. 점수 확인")
     print("5. 종료")
+    print("6. 퀴즈 삭제")
     print("=" * 40)
 
     choice = input("선택: ")
@@ -241,6 +242,35 @@ while True:
     elif choice == "5":
         print("프로그램을 종료합니다.")
         break
+
+    elif choice == "6":
+        print()
+        print("===== 퀴즈 삭제 =====")
+
+        for i, quiz in enumerate(quizzes, start=1):
+            print(f"{i}. {quiz.question}")
+
+        while True:
+            delete_input = input(
+                f"삭제할 퀴즈 번호를 입력하세요 (1-{len(quizzes)}): "
+            ).strip()
+
+            try:
+                delete_number = int(delete_input)
+            except ValueError:
+                print("숫자만 입력해주세요.")
+                continue
+
+            if delete_number < 1 or delete_number > len(quizzes):
+                print(f"1부터 {len(quizzes)} 사이의 숫자를 입력해주세요.")
+                continue
+
+            break
+
+        deleted_quiz = quizzes.pop(delete_number - 1)
+        save_state(quizzes, best_score)
+
+        print(f"'{deleted_quiz.question}' 퀴즈가 삭제되었습니다.")
 
     else:
         print("잘못된 입력입니다.")                
