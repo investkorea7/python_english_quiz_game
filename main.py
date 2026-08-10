@@ -1,4 +1,5 @@
 import json
+import random
 
 class Quiz:
     def __init__(self, question, choices, answer):
@@ -129,7 +130,10 @@ while True:
         print(f"퀴즈를 시작합니다! 총 {len(quizzes)}문제")
         print("-" * 40)
 
-        for quiz in quizzes:
+        shuffled_quizzes = quizzes.copy()
+        random.shuffle(shuffled_quizzes)
+
+        for quiz in shuffled_quizzes:
             quiz.show()
 
             while True:
