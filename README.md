@@ -205,7 +205,247 @@ Git에서 관리하지 않을 파일을 지정합니다.
 - JSON 파일 입출력
 - `random` 모듈
 
-Git branch and merge practice completed.
-Git clone and pull practice completed.
+---
 
-Git branch merge practice completed.
+## 10. Git 및 버전 관리 기록
+
+이 프로젝트는 Git과 GitHub를 사용하여 버전을 관리했습니다.
+
+GitHub 저장소:
+
+https://github.com/investkorea7/python_english_quiz_game
+
+개발 과정에서 기능 단위로 여러 번 커밋하였으며,
+10개 이상의 커밋을 통해 기능을 단계적으로 구현했습니다.
+
+주요 커밋 예시:
+
+```text
+9aefa00 Merge: merge-practice branch
+3503e58 Docs: merge practice
+bd5ea1b Docs: clone and pull practice
+58bd28f Docs: 브랜치 병합 실습
+6e8d584 Refactor: QuizGame 기능 분리 및 README 정리
+4d1a276 Feat: 퀴즈 삭제 기능 구현
+5aab3db Feat: 퀴즈 문제 수 선택 기능 구현
+4b770a2 Feat: 퀴즈 랜덤 출제 기능 구현
+25cfb5f Data: 테스트 퀴즈 상태 저장
+bfa546b Refactor: QuizGame 클래스에 조회 기능 분리
+06f8927 Feat: 퀴즈 추가 입력값 검증 강화
+79dd352 Feat: 퀴즈와 최고 점수 저장 및 불러오기 구현
+fd90d38 Feat: 최고 점수 확인 기능 구현
+18bcb82 Feat: 퀴즈 목록 조회 기능 구현
+dd06d53 Feat: 퀴즈 추가 기능 구현
+e48215b Feat: 퀴즈 풀이 및 정답 입력 예외 처리 구현
+6e5a0f4 Feat: Quiz 클래스와 기본 영어 퀴즈 추가
+9fc2799 Feat: 메뉴 선택 및 반복 기능 구현
+6a3a1ca Update README.md
+d6931ef Chore: 저장소 초기화 및 기본 파일 생성
+```
+
+### 브랜치 생성 및 병합
+
+기능을 메인 브랜치에서 바로 수정하지 않고 별도 브랜치에서 작업한 후,
+정상 동작을 확인하고 `main` 브랜치에 병합하는 과정을 연습했습니다.
+
+사용한 예:
+
+```bash
+git checkout -b merge-practice
+git add README.md
+git commit -m "Docs: merge practice"
+git checkout main
+git merge --no-ff merge-practice -m "Merge: merge-practice branch"
+git push origin main
+```
+
+병합 후 Git 그래프 예:
+
+```text
+*   9aefa00 Merge: merge-practice branch
+|\
+| * 3503e58 Docs: merge practice
+|/
+* bd5ea1b Docs: clone and pull practice
+```
+
+별도 브랜치를 사용하는 이유는 작업 중인 기능이 완성되기 전에
+안정적인 `main` 브랜치에 영향을 주지 않도록 하기 위해서입니다.
+
+기능 구현과 테스트가 완료된 뒤 병합하면 변경 내용을 검토하기 쉽고,
+문제가 발생했을 때 이전 상태로 돌아가기도 쉽습니다.
+
+---
+
+## 11. clone과 pull 실습
+
+GitHub 저장소를 다른 작업 환경에서도 사용할 수 있도록
+`git clone`과 `git pull`을 직접 실습했습니다.
+
+저장소 복제:
+
+```bash
+git clone https://github.com/investkorea7/python_english_quiz_game.git python_english_quiz_game_clone
+```
+
+복제된 저장소에서 README를 수정한 뒤 커밋하고 GitHub에 올렸습니다.
+
+```bash
+git add README.md
+git commit -m "Docs: clone and pull practice"
+git push origin main
+```
+
+그 후 원래 작업 폴더로 돌아와 GitHub의 최신 변경사항을 내려받았습니다.
+
+```bash
+cd ~/python_english_quiz_game
+git pull origin main
+```
+
+실행 결과 원본 저장소가 최신 커밋으로 Fast-forward 되었으며,
+마지막 `git status`에서 다음 상태를 확인했습니다.
+
+```text
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+
+---
+
+## 12. 커밋 메시지 규칙
+
+프로젝트의 변경 이력을 쉽게 이해할 수 있도록
+커밋 메시지 앞에 변경 종류를 나타내는 접두어를 사용했습니다.
+
+- `Feat:` 새로운 기능 추가
+- `Fix:` 오류 수정
+- `Refactor:` 기능은 유지하면서 코드 구조 개선
+- `Docs:` README 등 문서 변경
+- `Data:` 퀴즈 데이터 및 상태 데이터 변경
+- `Chore:` 저장소 설정이나 초기 파일 생성 등 기타 작업
+
+예:
+
+```text
+Feat: 퀴즈 삭제 기능 구현
+Refactor: QuizGame 기능 분리 및 README 정리
+Docs: clone and pull practice
+```
+
+이 규칙을 사용하면 Git 로그만 보더라도 각 커밋의 목적을 쉽게 파악할 수 있습니다.
+
+---
+
+## 13. 클래스를 사용한 이유
+
+이 프로젝트에서는 단순 함수만 사용하는 대신
+`Quiz` 클래스와 `QuizGame` 클래스를 사용했습니다.
+
+`Quiz` 클래스는 하나의 문제에 필요한
+문제 내용, 선택지, 정답을 하나의 객체로 관리합니다.
+
+예를 들어 각 문제마다 다음 데이터와 동작을 함께 관리할 수 있습니다.
+
+- 문제: `question`
+- 선택지: `choices`
+- 정답: `answer`
+- 문제 출력: `show()`
+- 정답 확인: `check_answer()`
+
+함수와 여러 개의 리스트만 사용하는 경우에는
+문제, 선택지, 정답의 관계를 개발자가 따로 관리해야 합니다.
+
+클래스를 사용하면 관련 데이터와 기능을 하나의 객체로 묶을 수 있기 때문에
+코드의 역할이 명확해지고 새로운 기능을 추가하거나 수정하기 쉽습니다.
+
+`QuizGame` 클래스는 전체 게임의 상태와 기능을 관리합니다.
+
+- 퀴즈 목록
+- 최고 점수
+- 퀴즈 실행
+- 퀴즈 추가
+- 목록 조회
+- 점수 확인
+- 퀴즈 삭제
+
+따라서 `Quiz`는 개별 문제의 책임을 담당하고,
+`QuizGame`은 전체 게임 진행의 책임을 담당하도록 역할을 분리했습니다.
+
+---
+
+## 14. JSON을 저장 형식으로 선택한 이유
+
+프로그램의 퀴즈와 최고 점수는 `state.json` 파일에 저장합니다.
+
+JSON을 선택한 이유는 다음과 같습니다.
+
+1. 사람이 직접 파일을 열어도 구조를 쉽게 이해할 수 있습니다.
+2. Python의 리스트와 딕셔너리를 JSON 구조로 쉽게 변환할 수 있습니다.
+3. Python 표준 라이브러리인 `json` 모듈만으로 읽기와 쓰기가 가능합니다.
+4. 이 프로젝트 규모에서는 별도의 데이터베이스를 설치하지 않아도 충분합니다.
+5. 다른 프로그래밍 언어나 프로그램과도 데이터를 교환하기 쉬운 형식입니다.
+
+따라서 소규모 퀴즈 프로그램에서
+가독성과 구현 편의성을 모두 확보할 수 있어 JSON을 사용했습니다.
+
+---
+
+## 15. 프로그램 안전 종료
+
+프로그램은 일반 메뉴의 종료 기능뿐 아니라
+사용자가 실행 중 `Ctrl+C`를 입력하는 상황도 고려합니다.
+
+`KeyboardInterrupt`가 발생하면 프로그램을 비정상적으로 끝내는 대신
+현재 퀴즈 목록과 최고 점수를 저장한 후 종료하도록 처리합니다.
+
+이를 통해 프로그램 사용 중 강제로 중단하더라도
+가능한 한 현재 상태를 보존할 수 있습니다.
+
+---
+
+## 16. 많은 퀴즈 데이터로 확장할 경우
+
+현재 프로그램은 소규모 학습용 프로젝트이므로
+모든 퀴즈를 리스트로 메모리에 불러오고 JSON 파일 하나에 저장합니다.
+
+퀴즈가 1,000개 이상으로 증가하면 다음 문제가 발생할 수 있습니다.
+
+- 프로그램 시작 시 모든 문제를 메모리에 불러오는 비용 증가
+- 특정 문제를 찾을 때 리스트 전체를 순차 검색하는 시간 증가
+- 문제 하나만 수정해도 JSON 파일 전체를 다시 저장해야 하는 비효율
+- 파일 크기가 커질수록 읽기와 쓰기 시간이 증가
+
+데이터가 많아질 경우 다음 방법을 고려할 수 있습니다.
+
+- 카테고리 또는 범위별로 문제 파일 분리
+- 필요한 문제만 일정 개수씩 불러오는 paging 방식
+- 문제 ID를 이용한 인덱싱
+- SQLite 같은 데이터베이스 사용
+- 검색용 딕셔너리 또는 인덱스 구조 추가
+
+현재 규모에서는 JSON과 리스트 방식이 단순하고 이해하기 쉽지만,
+대용량 데이터에서는 데이터베이스와 인덱싱 방식이 더 적합합니다.
+
+---
+
+## 17. state.json 백업 및 복구 전략
+
+현재 `state.json`에는 사용자가 추가한 퀴즈와 최고 점수가 저장되므로
+파일이 손상되면 사용자 데이터가 사라질 수 있습니다.
+
+실제 서비스 수준으로 확장한다면 다음과 같은 저장 전략을 사용할 수 있습니다.
+
+1. 기존 `state.json`을 `state_backup.json`으로 백업
+2. 새로운 데이터를 임시 파일에 먼저 저장
+3. 저장이 성공한 경우에만 기존 파일을 새 파일로 교체
+4. JSON 읽기 오류가 발생하면 백업 파일 복구 시도
+5. 백업도 사용할 수 없으면 프로그램의 기본 퀴즈 데이터로 초기화
+
+이 방식은 저장 중 프로그램이 종료되거나 파일이 손상되는 경우에도
+데이터를 복구할 가능성을 높일 수 있습니다.
+
+Git으로 소스 코드와 기본 데이터를 버전 관리하는 것도
+프로젝트 자체의 추가적인 백업 수단으로 사용할 수 있습니다.
