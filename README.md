@@ -449,3 +449,229 @@ JSON을 선택한 이유는 다음과 같습니다.
 
 Git으로 소스 코드와 기본 데이터를 버전 관리하는 것도
 프로젝트 자체의 추가적인 백업 수단으로 사용할 수 있습니다.
+
+---
+
+## 18. Git clone / pull 실제 실행 증빙
+
+아래 내용은 이 프로젝트에서 `git clone`과 `git pull`을 직접 실행했을 때의 실제 터미널 로그입니다.
+
+### 18-1. git clone 실행
+
+실행 명령:
+
+```bash
+cd ~
+git clone https://github.com/investkorea7/python_english_quiz_game.git python_english_quiz_game_clone
+cd python_english_quiz_game_clone
+git status
+```
+
+실제 실행 결과:
+
+```text
+Cloning into 'python_english_quiz_game_clone'...
+remote: Enumerating objects: 56, done.
+remote: Counting objects: 100% (56/56), done.
+remote: Compressing objects: 100% (33/33), done.
+remote: Total 56 (delta 28), reused 46 (delta 20), pack-reused 0
+Receiving objects: 100% (56/56), 12.15 KiB, done.
+Resolving deltas: 100% (28/28), done.
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+
+이 결과를 통해 GitHub 원격 저장소가 별도의
+`python_english_quiz_game_clone` 작업 폴더로 정상 복제된 것을 확인했습니다.
+
+### 18-2. clone 저장소에서 변경 후 push
+
+복제된 저장소에서 README를 수정한 뒤 다음 명령을 실행했습니다.
+
+```bash
+git add README.md
+git commit -m "Docs: clone and pull practice"
+git push origin main
+git status
+```
+
+실제 실행 결과에서 다음 커밋이 생성되고 원격 `main` 브랜치에 push되었습니다.
+
+```text
+[main bd5ea1b] Docs: clone and pull practice
+1 file changed, 2 insertions(+), 1 deletion(-)
+
+To https://github.com/investkorea7/python_english_quiz_game.git
+   58bd28f..bd5ea1b  main -> main
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+
+### 18-3. 원래 작업 폴더에서 git pull 실행
+
+복제본에서 push한 변경 내용을 원래 프로젝트 폴더에서 내려받기 위해 실행했습니다.
+
+```bash
+cd ~/python_english_quiz_game
+git pull origin main
+git status
+git log --oneline -5
+```
+
+실제 실행 결과:
+
+```text
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+
+From https://github.com/investkorea7/python_english_quiz_game
+ * branch            main       -> FETCH_HEAD
+   58bd28f..bd5ea1b  main       -> origin/main
+
+Updating 58bd28f..bd5ea1b
+Fast-forward
+ README.md | 3 +--
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+```
+
+따라서 이 프로젝트에서는 실제로 다음 Git 원격 협업 흐름을 수행했습니다.
+
+```text
+GitHub 원격 저장소
+        ↓ git clone
+별도 복제 저장소
+        ↓ 수정 → commit → push
+GitHub 원격 저장소
+        ↓ git pull
+원래 작업 저장소
+```
+
+---
+
+## 19. 요구사항 변경 시 수정 위치
+
+이 프로젝트는 기능별 책임을 분리했기 때문에 요구사항이 변경되었을 때
+어느 파일과 클래스를 수정해야 하는지 다음과 같이 판단할 수 있습니다.
+
+### 19-1. 점수 계산 방식이 변경되는 경우
+
+예를 들어 다음과 같은 요구사항이 추가될 수 있습니다.
+
+- 문제당 점수를 1점이 아니라 10점으로 변경
+- 오답 시 감점
+- 난이도에 따라 다른 점수 적용
+- 최고 점수 계산 방식 변경
+
+이 경우 가장 먼저 수정해야 하는 위치는 다음과 같습니다.
+
+| 수정 대상 | 위치 | 역할 |
+|---|---|---|
+| 점수 계산 | `main.py` → `QuizGame.play_quiz()` | `score` 초기화, 정답 판정 후 점수 증가, 최종 점수 계산 |
+| 최고 점수 | `main.py` → `QuizGame.play_quiz()` | 현재 점수와 `self.best_score` 비교 및 갱신 |
+| 최고 점수 표시 | `main.py` → `QuizGame.show_best_score()` | 저장된 최고 점수를 사용자에게 표시 |
+| 점수 저장 | `main.py` → `save_state()` | 최고 점수를 `state.json`에 저장 |
+| 점수 불러오기 | `main.py` → `load_state()` | `state.json`에서 최고 점수를 복원 |
+| 저장 데이터 | `state.json` → `best_score` | 프로그램 종료 후에도 최고 점수를 유지 |
+
+현재 점수 계산의 핵심은 `QuizGame.play_quiz()` 내부에 있습니다.
+
+```python
+score = 0
+
+if quiz.check_answer(user_answer):
+    print("정답입니다!")
+    score += 1
+
+if score > self.best_score:
+    self.best_score = score
+    save_state(self.quizzes, self.best_score)
+```
+
+따라서 **점수 계산 규칙이 변경되면 우선 `main.py`의
+`QuizGame.play_quiz()`를 수정**하고, 저장 형식까지 바뀌는 경우
+`save_state()`, `load_state()`, `state.json`도 함께 수정해야 합니다.
+
+### 19-2. 퀴즈 데이터 구조가 변경되는 경우
+
+예를 들어 각 퀴즈에 다음 정보를 추가할 수 있습니다.
+
+- 난이도 (`difficulty`)
+- 카테고리 (`category`)
+- 힌트 (`hint`)
+- 문제 ID (`id`)
+
+이 경우 수정해야 할 위치는 다음과 같습니다.
+
+| 수정 대상 | 위치 | 역할 |
+|---|---|---|
+| 퀴즈 객체 구조 | `main.py` → `Quiz.__init__()` | 문제 객체가 가지는 속성 정의 |
+| 문제 출력 | `main.py` → `Quiz.show()` | 추가된 정보를 문제 화면에 표시할 경우 수정 |
+| 정답 처리 | `main.py` → `Quiz.check_answer()` | 정답 판정 방식이 바뀌는 경우 수정 |
+| 퀴즈 추가 | `main.py` → `QuizGame.add_quiz()` | 새 필드를 사용자에게 입력받을 경우 수정 |
+| 기본 퀴즈 | `main.py` → `quizzes` 리스트 | 기본 데이터에 새 필드 추가 |
+| 데이터 저장 | `main.py` → `save_state()` | 새 필드를 JSON에 저장 |
+| 데이터 복원 | `main.py` → `load_state()` | 새 필드를 JSON에서 읽어 객체로 복원 |
+| 저장 구조 | `state.json` | 새 필드를 실제 저장 데이터에 반영 |
+
+예를 들어 `difficulty` 필드를 추가한다면 기존 구조:
+
+```python
+class Quiz:
+    def __init__(self, question, choices, answer):
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+```
+
+를 다음과 같은 방향으로 변경할 수 있습니다.
+
+```python
+class Quiz:
+    def __init__(self, question, choices, answer, difficulty):
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+        self.difficulty = difficulty
+```
+
+그리고 `save_state()`와 `load_state()`에도 `difficulty` 필드를 함께 추가해야
+프로그램을 다시 실행했을 때 해당 값이 유지됩니다.
+
+### 19-3. 요구사항 변경 영향 범위 요약
+
+```text
+점수 계산 변경
+→ main.py
+→ QuizGame.play_quiz()
+→ 필요 시 QuizGame.show_best_score()
+→ 필요 시 save_state() / load_state()
+→ 필요 시 state.json
+
+퀴즈 구조 변경
+→ main.py
+→ Quiz 클래스
+→ QuizGame.add_quiz()
+→ 기본 quizzes 데이터
+→ save_state() / load_state()
+→ state.json
+```
+
+즉 점수 정책 변경은 주로 **`QuizGame` 클래스**가 담당하고,
+퀴즈 자체의 데이터 구조 변경은 주로 **`Quiz` 클래스**가 담당합니다.
+
+저장해야 하는 데이터 구조까지 변경되는 경우에는
+`save_state()`, `load_state()`, `state.json`까지 함께 수정해야 합니다.
