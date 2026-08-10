@@ -204,3 +204,5 @@ Git에서 관리하지 않을 파일을 지정합니다.
 - 예외 처리 (`try / except`)
 - JSON 파일 입출력
 - `random` 모듈
+
+Git branch and merge practice completed.
